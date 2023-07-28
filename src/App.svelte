@@ -51,7 +51,7 @@
     }
 
     if ("WebSocket" in window || "MozWebSocket" in window) {
-      ws = new WebSocket(process.env.REACT_APP_BACKEND);
+      ws = new WebSocket("wss://jasonsd-chatroom-backend-f0a0780d9803.herokuapp.com/ws");
       ws.onopen = () => {
         connected = true;
       };
