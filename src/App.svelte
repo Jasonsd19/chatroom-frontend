@@ -119,32 +119,38 @@
 
 <style>
   .mainContainer {
-    display: flex;
-    flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .header {
+    display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
     align-content: center;
-    justify-content: center;
+    font-size: 8vw;
+    height: 8vh;
   }
 
   .chatroomContainer {
     display: flex;
-    height: 60vh;
-    width: 40vw;
+    height: 90vh;
+    width: 100%;
     flex-wrap: wrap;
-    align-content: center;
     justify-content: center;
   }
 
   .messageContainer {
     display: flex;
     flex-direction: column-reverse;
-    height: 100%;
+    height: 90%;
     width: 100%;
     overflow-x: hidden;
     overflow-y: visible;
+    border: 5px solid black;
+    border-radius: 15px;
   }
 
   .message {
@@ -159,37 +165,59 @@
     display: flex;
     flex-wrap: wrap;
     align-content: center;
-    justify-content: center;
-    height: 10%;
-    width: 50%;
-    padding: 1vw;
+    justify-content: space-evenly;
+    height: 8%;
+    width: 100%;
+    padding-top: 1vh;
+  }
+
+  .leaveButton {
+    width: 45px;
+    cursor: pointer;
   }
 
   .textContainer textarea {
     height: 100%;
-    width: 100%;
+    width: 60%;
     resize: none;
   }
 
-  .usernameContainer {
+  .textContainer button {
     width: 20%;
-    height: 3%;
+    background-color: white;
+    color: black;
+    padding: 0;
+  }
+
+  .joinContainer {
     display: flex;
-    font-size: 1.5vw;
-    padding: 5vw;
-    justify-content: space-evenly;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 80vh;
+    width: 100vw;
+    align-content: center;
+    justify-content: center;
+  }
+
+  .usernameContainer {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 10%;
+    font-size: 7.5vw;
+    padding: 10vw;
     align-items: center;
   }
 
   .usernameContainer label {
-    margin-bottom: 0.5vw;
-    margin-right: 0.5vw;
+    margin-bottom: 2vw;
   }
 
   .usernameContainer input {
     height: 100%;
     width: 100%;
-    font-size: 1.5vw;
+    font-size: 5vw;
+    text-align: center;
   }
 
   .joinButtonContainer {
@@ -197,5 +225,127 @@
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
+    padding: 10vw;
+  }
+
+  .joinButtonContainer button {
+    width: 33vw;
+    font-size: 3vw;
+  }
+
+  .githubLink {
+    width: 7vw;
+  }
+
+  .websiteLink {
+    width: 7vw;
+  }
+
+  @media only screen and (min-width: 600px) {
+    .header {
+      height: auto;
+      font-size: 40px;
+    }
+
+    .chatroomContainer {
+      height: 85vh;
+    }
+
+    .messageContainer {
+      width: 80vw;
+    }
+
+    .textContainer {
+      padding: 10px;
+      width: 80vw;
+    }
+
+    .leaveButton {
+      width: 50px;
+      cursor: pointer;
+    }
+
+    .textContainer textarea {
+      height: 100%;
+      width: 60%;
+      resize: none;
+      font-size: 1.25vw;
+    }
+
+    .textContainer button {
+      width: 20%;
+      background-color: white;
+      color: black;
+      padding: 0;
+      font-size: 2vw;
+    }
+
+    .usernameContainer {
+      width: 200px;
+      font-size: 30px;
+      padding: 85px;
+    }
+
+    .usernameContainer label {
+      margin-bottom: 25px;
+    }
+
+    .usernameContainer input {
+      font-size: 25px;
+    }
+
+    .joinButtonContainer {
+      padding: 85px;
+    }
+
+    .joinButtonContainer button {
+      width: auto;
+      font-size: inherit;
+    }
+
+    .githubLink {
+      width: 42.5px;
+    }
+
+    .websiteLink {
+      width: 42.5px;
+    }
+  }
+
+  @media only screen and (min-width: 800px) {
+    .messageContainer {
+      width: 70vw;
+    }
+
+    .textContainer {
+      width: 70vw;
+    }
+  }
+
+  @media only screen and (min-width: 1000px) {
+    .messageContainer {
+      width: 60vw;
+    }
+
+    .textContainer {
+      width: 60vw;
+    }
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .chatroomContainer {
+      flex-direction: column;
+      align-content: center;
+      height: 90vh;
+    }
+
+    .messageContainer {
+      height: 85%;
+      width: 40vw;
+    }
+
+    .textContainer {
+      width: 40vw;
+    }
   }
 </style>
