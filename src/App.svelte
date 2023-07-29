@@ -9,19 +9,39 @@
 
   let username: string = "";
   let sendText: HTMLTextAreaElement;
+  let joinButton: HTMLButtonElement;
   let messages: UserMessage[] = [];
+  let width: number;
 
   let connected = false;
   let ws: WebSocket | null = null;
 
   const onPressEnter = (ev: KeyboardEvent) => {
-    if (ev.code === "Enter" && !ev.shiftKey && ws) {
-      ev.preventDefault();
-      const m: UserMessage = { username, message: sendText.value };
-      if (m && m.message.length <= 256) {
-        ws.send(JSON.stringify(m));
-        sendText.value = "";
+    if ((ev.code === "Enter" || ev.code === "NumpadEnter") && !ev.shiftKey) {
+      if (joinButton && username) {
+        joinButton.click();
+        return;
       }
+
+      if (sendText && ws) {
+        ev.preventDefault();
+        onPressSend();
+        return;
+      }
+    }
+  };
+
+  const onPressLeave = () => {
+    if (ws) ws.close();
+  };
+
+  const onPressSend = () => {
+    if (!sendText?.value) return;
+
+    const m: UserMessage = { username, message: sendText.value };
+    if (m && m.message.length <= 256) {
+      ws.send(JSON.stringify(m));
+      sendText.value = "";
     }
   };
 
@@ -46,7 +66,10 @@
         text: "Username must be at least 8 characters long.",
         icon: "error",
         confirmButtonText: "Close",
+        allowEnterKey: true,
+        allowEscapeKey: true,
       });
+      username = "";
       return;
     }
 
@@ -58,15 +81,21 @@
 
       ws.onclose = () => {
         connected = false;
+        username = "";
+        messages = [];
       };
 
       ws.onerror = () => {
         connected = false;
+        username = "";
+        messages = [];
         Swal.fire({
           title: "Error",
           text: "We ran into an unexpected error, please refresh the page and try again.",
           icon: "error",
           confirmButtonText: "Close",
+          allowEnterKey: true,
+          allowEscapeKey: true,
         });
       };
 
@@ -81,12 +110,25 @@
         text: "Your browser does not support websockets!",
         icon: "error",
         confirmButtonText: "Close",
+        allowEnterKey: true,
+        allowEscapeKey: true,
       });
     }
   };
 </script>
 
+<svelte:window bind:innerWidth={width} />
+
 <div class="mainContainer">
+  <div class="header">
+    <a href="https://github.com/Jasonsd19/chatroom-backend" target="_blank" rel="noreferrer noopener">
+      <img class="githubLink" src="github.svg" alt="Check out the code on GitHub" />
+    </a>
+    <div class="title">Conversin</div>
+    <a href="https://jasondeol.com/" target="_blank" rel="noreferrer noopener">
+      <img class="websiteLink" src="website.svg" alt="Check out my portfolio website" />
+    </a>
+  </div>
   {#if connected}
     <div class="chatroomContainer">
       <div class="messageContainer">
@@ -103,16 +145,20 @@
         {/if}
       </div>
       <div class="textContainer">
+        <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
         <textarea maxlength={200} bind:this={sendText} />
+        <button on:click={onPressSend}>Send</button>
       </div>
     </div>
   {:else}
-    <div class="usernameContainer">
-      <label for="username">Username: </label>
-      <input inputmode="text" on:input={onChangeUsername} />
-    </div>
-    <div class="joinButtonContainer">
-      <button on:click={connect}>Join Chatroom!</button>
+    <div class="joinContainer">
+      <div class="usernameContainer">
+        <label for="username">Username </label>
+        <input inputmode="text" on:input={onChangeUsername} />
+      </div>
+      <div class="joinButtonContainer">
+        <button on:click={connect} bind:this={joinButton}>Join Chatroom!</button>
+      </div>
     </div>
   {/if}
 </div>
