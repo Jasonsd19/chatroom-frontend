@@ -90,7 +90,7 @@
     }
 
     if ("WebSocket" in window || "MozWebSocket" in window) {
-      ws = new WebSocket(`ws://localhost:8080/ws?username=${username}`);
+      ws = new WebSocket(`wss://chatroom-backend-production.up.railway.app/ws?username=${username}`);
       ws.onopen = () => {
         connected = true;
       };
