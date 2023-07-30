@@ -99,15 +99,17 @@
         connected = false;
         username = "";
         messages = [];
+        users = [];
       };
 
       ws.onerror = () => {
         connected = false;
         username = "";
         messages = [];
+        users = [];
         Swal.fire({
           title: "Error",
-          text: "We ran into an unexpected error, please refresh the page and try again.",
+          text: "Username is already in use, please try another name.",
           icon: "error",
           confirmButtonText: "Close",
           allowEnterKey: true,
@@ -218,7 +220,7 @@
     <div class="joinContainer">
       <div class="usernameContainer">
         <label for="username">Username </label>
-        <input inputmode="text" on:input={onChangeUsername} />
+        <input inputmode="text" maxlength={15} value={username} on:input={onChangeUsername} />
       </div>
       <div class="joinButtonContainer">
         <button on:click={connect} bind:this={joinButton}>Join Chatroom!</button>
