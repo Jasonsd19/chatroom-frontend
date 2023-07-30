@@ -65,3 +65,7 @@ button:focus-visible {
 img {
   overflow: visible;
 }
+
+* {
+  font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+}

@@ -39,8 +39,8 @@
   }
 
   .descContainer {
-    width: 70%;
-    font-size: 12px;
+    width: 60%;
+    font-size: 12.5px;
     overflow: auto;
   }
 
@@ -48,13 +48,13 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    width: 30%;
+    width: 40%;
     border-left: 2px solid grey;
   }
 
   .user {
     padding: 5px;
-    font-size: 2.6vw;
+    font-size: 3.25vw;
   }
 
   @media only screen and (min-width: 600px) {
@@ -81,21 +81,49 @@
       width: 100%;
       height: 40%;
       border: 0px;
-      font-size: 12px;
+      font-size: 15px;
       overflow: auto;
     }
 
     .user {
       padding: 0;
       font-size: 8px;
-      width: 33%;
+      width: 30%;
       padding-left: 10px;
     }
   }
 
   @media only screen and (min-width: 800px) {
     .user {
-      font-size: 11.4px;
+      font-size: 9px;
+    }
+  }
+
+  @media only screen and (min-width: 900px) {
+    .user {
+      font-size: 10px;
+    }
+  }
+
+  @media only screen and (min-width: 1000px) {
+    .user {
+      font-size: 11px;
+    }
+
+    .descContainer {
+      font-size: 15px;
+    }
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .user {
+      font-size: 13px;
+    }
+  }
+
+  @media only screen and (min-width: 1400px) {
+    .user {
+      font-size: 15px;
     }
   }
 </style>
