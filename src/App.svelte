@@ -15,6 +15,7 @@
   let messages: UserMessage[] = [];
   let users: string[] = [];
   let width: number;
+  let areButtonsDisabled = false;
 
   let connected = false;
   let ws: WebSocket | null = null;
@@ -48,7 +49,10 @@
   };
 
   const onPressLeave = () => {
-    if (ws) ws.close();
+    if (ws && !areButtonsDisabled) {
+      areButtonsDisabled = true;
+      ws.close();
+    }
   };
 
   const onPressSend = () => {
@@ -100,6 +104,7 @@
         username = "";
         messages = [];
         users = [];
+        areButtonsDisabled = false;
       };
 
       ws.onerror = () => {
@@ -107,6 +112,7 @@
         username = "";
         messages = [];
         users = [];
+        areButtonsDisabled = false;
         Swal.fire({
           title: "Error",
           text: "Username is already in use, please try another name.",
@@ -188,7 +194,7 @@
         <div class="textContainer">
           <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
           <textarea maxlength={200} bind:this={sendText} />
-          <button on:click={onPressSend}>Send</button>
+          <button on:click={onPressSend} disabled={areButtonsDisabled}>Send</button>
         </div>
       </div>
     {:else}
@@ -211,7 +217,7 @@
           <div class="textContainer">
             <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
             <textarea maxlength={200} bind:this={sendText} />
-            <button on:click={onPressSend}>Send</button>
+            <button on:click={onPressSend} disabled={areButtonsDisabled}>Send</button>
           </div>
         </div>
       </div>
