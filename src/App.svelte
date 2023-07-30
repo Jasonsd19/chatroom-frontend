@@ -1,16 +1,19 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import Swal from "sweetalert2";
+  import type { ClientList, UserMessage } from "./lib/types";
+  import DescriptionUserContainer from "./lib/DescriptionUserContainer.svelte";
 
-  interface UserMessage {
-    username: string;
-    message: string;
-  }
-
-  let username: string = "";
   let sendText: HTMLTextAreaElement;
   let joinButton: HTMLButtonElement;
+  let sideMenu: HTMLDivElement;
+  let expandIcon: HTMLImageElement;
+
+  let animateSlide = false;
+
+  let username: string = "";
   let messages: UserMessage[] = [];
+  let users: string[] = [];
   let width: number;
 
   let connected = false;
@@ -28,6 +31,19 @@
         onPressSend();
         return;
       }
+    }
+  };
+
+  const toggleMenu = () => {
+    if (sideMenu) {
+      animateSlide = !animateSlide;
+    }
+
+    if (expandIcon) {
+      expandIcon.classList.add("animateFade");
+      setTimeout(() => {
+        expandIcon.classList.remove("animateFade");
+      }, 1250);
     }
   };
 
@@ -60,10 +76,10 @@
   });
 
   const connect = () => {
-    if (username.length <= 8) {
+    if (username.length < 3 || username.length > 15) {
       Swal.fire({
         title: "Error",
-        text: "Username must be at least 8 characters long.",
+        text: "Username must be between 3 and 15 characters.",
         icon: "error",
         confirmButtonText: "Close",
         allowEnterKey: true,
@@ -74,7 +90,7 @@
     }
 
     if ("WebSocket" in window || "MozWebSocket" in window) {
-      ws = new WebSocket("wss://chatroom-backend-production.up.railway.app/ws");
+      ws = new WebSocket(`ws://localhost:8080/ws?username=${username}`);
       ws.onopen = () => {
         connected = true;
       };
@@ -100,9 +116,16 @@
       };
 
       ws.onmessage = (event) => {
-        const message = JSON.parse(event.data) as UserMessage;
-        if (messages.length >= 50) messages = [message, ...messages.slice(0, -1)];
-        else messages = [message, ...messages];
+        const parsedData = JSON.parse(event.data);
+
+        if (parsedData?.username) {
+          const message = parsedData as UserMessage;
+          if (messages.length >= 50) messages = [message, ...messages.slice(0, -1)];
+          else messages = [message, ...messages];
+        } else {
+          const data = parsedData as ClientList;
+          users = [...data.user_list];
+        }
       };
     } else {
       Swal.fire({
@@ -130,26 +153,67 @@
     </a>
   </div>
   {#if connected}
-    <div class="chatroomContainer">
-      <div class="messageContainer">
-        {#if messages.length}
-          {#each messages as message, i (i)}
+    {#if width <= 600}
+      <img
+        class="expandIcon"
+        src="expand.svg"
+        alt="Expand/Close user menu"
+        on:click={toggleMenu}
+        bind:this={expandIcon}
+      />
+      <div
+        class="activityContainer"
+        class:slideMenu={animateSlide}
+        class:closeMenu={!animateSlide}
+        bind:this={sideMenu}
+      >
+        <DescriptionUserContainer {users} />
+      </div>
+      <div class="chatroomContainer">
+        <div class="messageContainer">
+          {#if messages.length}
+            {#each messages as message, i (i)}
+              <div class="message">
+                {`${message.username}:\n${message.message}`}
+              </div>
+            {/each}
+          {:else}
             <div class="message">
-              {`${message.username}: ${message.message}`}
+              {"No messages yet!"}
             </div>
-          {/each}
-        {:else}
-          <div class="message">
-            {"No messages yet!"}
+          {/if}
+        </div>
+        <div class="textContainer">
+          <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
+          <textarea maxlength={200} bind:this={sendText} />
+          <button on:click={onPressSend}>Send</button>
+        </div>
+      </div>
+    {:else}
+      <div class="activityContainer">
+        <DescriptionUserContainer {users} />
+        <div class="chatroomContainer">
+          <div class="messageContainer">
+            {#if messages.length}
+              {#each messages as message, i (i)}
+                <div class="message">
+                  {`${message.username}:\n${message.message}`}
+                </div>
+              {/each}
+            {:else}
+              <div class="message">
+                {"No messages yet!"}
+              </div>
+            {/if}
           </div>
-        {/if}
+          <div class="textContainer">
+            <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
+            <textarea maxlength={200} bind:this={sendText} />
+            <button on:click={onPressSend}>Send</button>
+          </div>
+        </div>
       </div>
-      <div class="textContainer">
-        <img class="leaveButton" src="leave.svg" alt="Leave chatroom" on:click={onPressLeave} />
-        <textarea maxlength={200} bind:this={sendText} />
-        <button on:click={onPressSend}>Send</button>
-      </div>
-    </div>
+    {/if}
   {:else}
     <div class="joinContainer">
       <div class="usernameContainer">
@@ -165,6 +229,7 @@
 
 <style>
   .mainContainer {
+    position: relative;
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
@@ -180,12 +245,29 @@
     height: 8vh;
   }
 
+  .activityContainer {
+    position: absolute;
+    display: flex;
+    top: 8vh;
+    height: 91.5vh;
+    width: 100vw;
+    transition: transform 1s;
+  }
+
+  .expandIcon {
+    position: absolute;
+    top: 9vh;
+    right: 2vw;
+    width: 30px;
+    cursor: pointer;
+    z-index: 1;
+  }
+
   .chatroomContainer {
     display: flex;
     height: 90vh;
     width: 100%;
     flex-wrap: wrap;
-    justify-content: center;
   }
 
   .messageContainer {
@@ -205,6 +287,7 @@
     width: 100%;
     justify-content: left;
     padding: 1vh;
+    white-space: pre-wrap;
   }
 
   .textContainer {
@@ -260,7 +343,7 @@
   }
 
   .usernameContainer input {
-    height: 100%;
+    height: auto;
     width: 100%;
     font-size: 5vw;
     text-align: center;
@@ -277,6 +360,7 @@
   .joinButtonContainer button {
     width: 33vw;
     font-size: 3vw;
+    color: white;
   }
 
   .githubLink {
@@ -293,8 +377,18 @@
       font-size: 40px;
     }
 
+    .activityContainer {
+      position: static;
+      display: flex;
+      height: 90.5vh;
+      width: 100vw;
+      transform: none;
+    }
+
     .chatroomContainer {
       height: 85vh;
+      width: 60%;
+      padding-right: 5px;
     }
 
     .messageContainer {
@@ -313,13 +407,13 @@
 
     .textContainer textarea {
       height: 100%;
-      width: 60%;
+      width: 65%;
       resize: none;
-      font-size: 1.25vw;
+      font-size: 15px;
     }
 
     .textContainer button {
-      width: 20%;
+      width: 15%;
       background-color: white;
       color: black;
       padding: 0;
@@ -368,30 +462,90 @@
     }
   }
 
-  @media only screen and (min-width: 1000px) {
-    .messageContainer {
-      width: 60vw;
+  @media only screen and (min-width: 900px) {
+    .leaveButton {
+      width: 50px;
     }
 
-    .textContainer {
-      width: 60vw;
+    .textContainer textarea {
+      height: 100%;
+      width: 70%;
+      resize: none;
+    }
+
+    .textContainer button {
+      width: 12.5%;
+      background-color: white;
+      color: black;
+      padding: 0;
     }
   }
 
-  @media only screen and (min-width: 1200px) {
-    .chatroomContainer {
-      flex-direction: column;
-      align-content: center;
-      height: 90vh;
+  @media only screen and (min-width: 1100px) {
+    .leaveButton {
+      width: 52.5px;
     }
 
-    .messageContainer {
-      height: 85%;
-      width: 40vw;
+    .textContainer textarea {
+      height: 100%;
+      width: 75%;
+      resize: none;
     }
 
-    .textContainer {
-      width: 40vw;
+    .textContainer button {
+      width: 12.5%;
+      background-color: white;
+      color: black;
+      padding: 0;
+    }
+  }
+
+  @media only screen and (min-width: 1500px) {
+    .leaveButton {
+      width: 52.5px;
+    }
+
+    .textContainer textarea {
+      height: 100%;
+      width: 75%;
+      resize: none;
+    }
+
+    .textContainer button {
+      width: 12.5%;
+      background-color: white;
+      color: black;
+      padding: 0;
+    }
+  }
+
+  .slideMenu {
+    transform: translateX(0%);
+  }
+
+  .closeMenu {
+    transform: translateX(100%);
+  }
+
+  :global(.animateFade) {
+    animation: fadeInOut 1.25s;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 1;
+    }
+
+    10% {
+      opacity: 0;
+    }
+
+    90% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
     }
   }
 </style>
