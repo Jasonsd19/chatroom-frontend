@@ -576,8 +576,8 @@
     .menuButton {
       position: fixed;
       z-index: 3;
+      top: 5rem;
       right: 1.4rem;
-      bottom: 1.4rem;
       display: grid;
       width: 2.75rem;
       height: 2.75rem;
@@ -589,6 +589,10 @@
     .menuButton img {
       width: 100%;
       height: 100%;
+    }
+
+    .chatHeader {
+      padding-right: 4.75rem;
     }
 
     .sidebar {
