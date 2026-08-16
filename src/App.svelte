@@ -138,17 +138,6 @@
     </a>
     <div class="brand">Conversin</div>
     <div class="headerActions">
-      {#if connected}
-        <button
-          class="menuButton"
-          type="button"
-          aria-label="Toggle chat details"
-          aria-expanded={isSidebarOpen}
-          on:click={() => (isSidebarOpen = !isSidebarOpen)}
-        >
-          <img src="expand.svg" alt="" />
-        </button>
-      {/if}
       <a
         class="headerLink"
         href="https://jasondeol.com/"
@@ -173,7 +162,18 @@
             <p class="eyebrow">Live chat</p>
             <h1>The conversation</h1>
           </div>
-          <span class="memberCount">{users.length} online</span>
+          <div class="chatActions">
+            <span class="memberCount">{users.length} online</span>
+            <button
+              class="menuButton"
+              type="button"
+              aria-label="Toggle chat details"
+              aria-expanded={isSidebarOpen}
+              on:click={() => (isSidebarOpen = !isSidebarOpen)}
+            >
+              <img src="expand.svg" alt="" />
+            </button>
+          </div>
         </div>
 
         <div class="messageContainer" aria-live="polite">
@@ -351,6 +351,12 @@
     border-radius: 999px;
     color: #d6d6d6;
     font-size: 0.72rem;
+  }
+
+  .chatActions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
 
   .messageContainer {
