@@ -590,6 +590,8 @@
     }
 
     .menuButton {
+      position: relative;
+      z-index: 3;
       display: grid;
       width: 2.2rem;
       height: 2.2rem;
@@ -605,7 +607,7 @@
     .sidebar {
       position: fixed;
       z-index: 2;
-      top: 4.35rem;
+      top: 9.35rem;
       right: 0;
       bottom: 0;
       width: min(88vw, 24rem);
@@ -634,6 +636,10 @@
   }
 
   @media (max-width: 420px) {
+    .sidebar {
+      top: 8.85rem;
+    }
+
     .memberCount {
       display: none;
     }
