@@ -2,128 +2,163 @@
   export let users: string[];
 </script>
 
-<div class="descUserContainer">
-  <div class="descContainer">
-    <p style="margin: 10px;">
-      Conversin is a simple chatroom application I wrote utilizing Go for the backend and TypeScript/Svelte for the
-      front-end. The main focus was on working with and learning about websockets, and gaining a deeper understanding on
-      developing APIs using the net/http package for Go. While I did spend some time working on the front-end it is
-      still very rudimentary and was not the main focus, however I still took the time to practice mobile-first
-      development and make the application responsive to both mobile and desktop.<br /><br />
-      If I had more time to spend on this project I would look to add two more features. One would be the ability to have
-      multiple chatrooms available, and a simple selector to jump between them as needed. The second feature would be having
-      the back-end cache recent messages, so when a user joins they can see what was previously being talked about (I would
-      probably implement this with a linked list).<br /><br /> If you are interested in the back end or front end code you
-      can click the GitHub icon in the top left to check it out. Also, if you are interested in learning more about me and
-      other projects I have worked please feel free to click the icon in the top right to check out my portflio website.
+<div class="sidebarContent">
+  <section class="aboutSection" aria-labelledby="about-heading">
+    <p class="eyebrow">About Conversin</p>
+    <h2 id="about-heading">A deliberately simple chatroom.</h2>
+    <p>
+      Conversin is a small real-time chat application built with Go, WebSockets, TypeScript, and Svelte.
     </p>
-  </div>
-  <div class="userContainer">
-    {#each users as user, i (i)}
-      <div class="user">
-        <img style="width: 10px;" src="online.svg" alt="Online" />
-        {user}
+    <p>
+      It is a place to start a conversation without accounts, feeds, or distractions—just choose a name and join in.
+    </p>
+  </section>
+
+  <section class="peopleSection" aria-labelledby="online-heading">
+    <div class="sectionHeader">
+      <div>
+        <p class="eyebrow">In this room</p>
+        <h2 id="online-heading">Online now</h2>
       </div>
-    {/each}
-  </div>
+      <span>{users.length}</span>
+    </div>
+
+    <div class="userList">
+      {#if users.length}
+        {#each users as user (user)}
+          <div class="user">
+            <img src="online.svg" alt="Online" />
+            <span>{user}</span>
+          </div>
+        {/each}
+      {:else}
+        <p class="emptyUsers">Waiting for someone to join.</p>
+      {/if}
+    </div>
+  </section>
 </div>
 
 <style>
-  .descUserContainer {
-    display: flex;
+  .sidebarContent {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
     height: 100%;
-    width: 100%;
-    background-color: #242424;
-    border: 2px solid grey;
-    border-radius: 5px;
+    min-height: min(32rem, calc(100dvh - 9rem));
+    overflow: hidden;
+    border: 1px solid #5b5b5b;
+    border-radius: 0.85rem;
+    background: #1d1d1d;
+    box-shadow: 0 1.25rem 3rem rgba(0, 0, 0, 0.22);
   }
 
-  .descContainer {
-    width: 60%;
-    font-size: 12.5px;
-    overflow: auto;
+  .aboutSection,
+  .peopleSection {
+    padding: clamp(1rem, 2.4vw, 1.5rem);
   }
 
-  .userContainer {
+  .aboutSection {
+    overflow-y: auto;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.4rem;
+    color: #a6a6a6;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin: 0;
+    color: #f7f7f7;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .aboutSection > p:not(.eyebrow) {
+    margin: 1rem 0 0;
+    color: #b8b8b8;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .peopleSection {
+    min-height: 10rem;
+    border-top: 1px solid #444;
+    background: #202020;
+  }
+
+  .sectionHeader {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    width: 40%;
-    border-left: 2px solid grey;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .sectionHeader span {
+    display: grid;
+    width: 1.75rem;
+    height: 1.75rem;
+    place-items: center;
+    border: 1px solid #555;
+    border-radius: 50%;
+    color: #ececec;
+    font-size: 0.72rem;
+  }
+
+  .userList {
+    display: grid;
+    gap: 0.45rem;
+    max-height: 12rem;
+    margin-top: 1rem;
+    overflow-y: auto;
   }
 
   .user {
-    padding: 5px;
-    font-size: 3.25vw;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 0.4rem;
+    color: #dedede;
+    font-size: 0.8rem;
   }
 
-  @media only screen and (min-width: 600px) {
-    .descUserContainer {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 40%;
-      background-color: inherit;
-      border: 0px solid black;
-      border-radius: 0px;
-    }
-
-    .descContainer {
-      padding-top: 20px;
-      width: 100%;
-      height: 60%;
-      border-bottom: 5px solid black;
-    }
-
-    .userContainer {
-      flex-direction: row;
-      flex-wrap: wrap;
-      width: 100%;
-      height: 40%;
-      border: 0px;
-      font-size: 15px;
-      overflow: auto;
-    }
-
-    .user {
-      padding: 0;
-      font-size: 8px;
-      width: 30%;
-      padding-left: 10px;
-    }
+  .user:hover {
+    border-color: #484848;
+    background: #292929;
   }
 
-  @media only screen and (min-width: 800px) {
-    .user {
-      font-size: 9px;
-    }
+  .user img {
+    width: 0.6rem;
+    height: 0.6rem;
+    flex: 0 0 auto;
   }
 
-  @media only screen and (min-width: 900px) {
-    .user {
-      font-size: 10px;
-    }
+  .user span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  @media only screen and (min-width: 1000px) {
-    .user {
-      font-size: 11px;
-    }
-
-    .descContainer {
-      font-size: 15px;
-    }
+  .emptyUsers {
+    margin: 0;
+    color: #929292;
+    font-size: 0.75rem;
+    font-style: italic;
   }
 
-  @media only screen and (min-width: 1200px) {
-    .user {
-      font-size: 13px;
+  @media (max-width: 700px) {
+    .sidebarContent {
+      min-height: 100%;
+      background: #1b1b1b;
     }
-  }
 
-  @media only screen and (min-width: 1400px) {
-    .user {
-      font-size: 15px;
+    .aboutSection {
+      padding-top: 1.5rem;
     }
   }
 </style>
