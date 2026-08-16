@@ -10,7 +10,7 @@
       Conversin is a small real-time chat application built with Go, WebSockets, TypeScript, and Svelte.
     </p>
     <p>
-      It is a place to start a conversation without accounts, feeds, or distractions—just choose a name and join in.
+      It is a place to start a conversation without accounts, feeds, or distractions. Just choose a name and join in.
     </p>
   </section>
 
