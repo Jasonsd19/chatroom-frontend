@@ -137,29 +137,32 @@
       <img src="github.svg" alt="" />
     </a>
     <div class="brand">Conversin</div>
-    <a
-      class="headerLink"
-      href="https://jasondeol.com/"
-      target="_blank"
-      rel="noreferrer noopener"
-      aria-label="Visit Jason Deol's portfolio"
-    >
-      <img src="website.svg" alt="" />
-    </a>
+    <div class="headerActions">
+      {#if connected}
+        <button
+          class="menuButton"
+          type="button"
+          aria-label="Toggle chat details"
+          aria-expanded={isSidebarOpen}
+          on:click={() => (isSidebarOpen = !isSidebarOpen)}
+        >
+          <img src="expand.svg" alt="" />
+        </button>
+      {/if}
+      <a
+        class="headerLink"
+        href="https://jasondeol.com/"
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-label="Visit Jason Deol's portfolio"
+      >
+        <img src="website.svg" alt="" />
+      </a>
+    </div>
   </header>
 
   {#if connected}
     <main class="roomLayout">
-      <button
-        class="menuButton"
-        type="button"
-        aria-label="Toggle chat details"
-        aria-expanded={isSidebarOpen}
-        on:click={() => (isSidebarOpen = !isSidebarOpen)}
-      >
-        <img src="expand.svg" alt="" />
-      </button>
-
       <aside class="sidebar" class:sidebarOpen={isSidebarOpen}>
         <DescriptionUserContainer {users} />
       </aside>
@@ -267,6 +270,13 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
+  }
+
+  .headerActions {
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: 0.5rem;
   }
 
   .headerLink img {
@@ -554,7 +564,7 @@
   @media (max-width: 700px) {
     .header {
       min-height: 4.35rem;
-      grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
       padding-inline: 1rem;
     }
 
@@ -574,25 +584,16 @@
     }
 
     .menuButton {
-      position: fixed;
-      z-index: 3;
-      top: 5rem;
-      right: 1.4rem;
       display: grid;
-      width: 2.75rem;
-      height: 2.75rem;
-      padding: 0.65rem;
+      width: 2.2rem;
+      height: 2.2rem;
+      padding: 0.5rem;
       border-radius: 50%;
-      box-shadow: 0 0.6rem 1.3rem rgba(0, 0, 0, 0.3);
     }
 
     .menuButton img {
       width: 100%;
       height: 100%;
-    }
-
-    .chatHeader {
-      padding-right: 4.75rem;
     }
 
     .sidebar {
